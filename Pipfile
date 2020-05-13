@@ -12,6 +12,7 @@ django = "*"
 djangorestframework = "*"
 pylint = "*"
 requests = "*"
+nltk = "*"
 
 [requires]
 python_version = "3.7"
