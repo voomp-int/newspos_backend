@@ -18,11 +18,16 @@ def welcome(request):
 # API calling
 @api_view(["GET"])
 def get_newsapi(request):
-    search = request.query_params.get('search', None)
-    resp = requests.get(
-        'https://newsapi.org/v2/top-headlines?country=in&apiKey=' + apiKey + '&q=' + search)
+    search = request.query_params.get('search')
+    url = 'https://newsapi.org/v2/top-headlines?country=in&apiKey=' + apiKey
+
+    if search is not None:
+        url = url + '&q=' + search
+
+    resp = requests.get(url)
     if resp.status_code != 200:
         return JsonResponse({'error': 'Something went wrong {}'.format(resp.status_code)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     articles = resp.json()['articles']
     response = []
     for article in articles:
