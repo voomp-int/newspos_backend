@@ -78,14 +78,3 @@ def delete_article(request, article_id):
         return JsonResponse({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
     except Exception:
         return JsonResponse({'error': 'Something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class SmallCursorPagination(CursorPagination):
-    page_size = 3
-    ordering = 'id'
-
-
-class RecordsCursored(generics.ListAPIView):
-    queryset = Article.objects.all()
-    serializer_class = ArticleSerializer
-    pagination_class = SmallCursorPagination
