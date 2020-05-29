@@ -1,0 +1,15 @@
+{
+    "sqltools.connections": [
+        {
+            "askForPassword": false,
+            "database": "newspos-pg-main",
+            "driver": "PostgreSQL",
+            "name": "newspos-db",
+            "password": "asstechdb",
+            "port": 5432,
+            "previewLimit": 50,
+            "server": "newspos-pg-main.cbbusyz4vegh.us-east-2.rds.amazonaws.com",
+            "username": "postgres"
+        }
+    ]
+}

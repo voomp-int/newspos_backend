@@ -6,5 +6,6 @@ urlpatterns = [
     path('getArticles', views.get_articles),
     path('addArticle', views.add_article),
     path('updateArticle/<int:article_id>', views.alter_article),
-    path('deleteArticle/<int:article_id>', views.delete_article)
+    path('deleteArticle/<int:article_id>', views.delete_article),
+    path('test', views.RecordsCursored.as_view())
 ]
