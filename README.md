@@ -39,8 +39,6 @@ Pipenv is a tool that aims to bring the best of all packaging worlds (bundler, c
 It automatically creates and manages a virtualenv for your projects, as well as adds/removes packages from your Pipfile as you install/uninstall packages.
 It also generates the ever--important Pipfile.lock, which is used to produce deterministic builds.
 
-Environment Variables:
-Copy sample.env and rename to .env and all the required details
 
 Installation:
 
@@ -51,6 +49,10 @@ If you're on Windows, Use pip to install Pipenv:
 \$ pip install --user pipenv
 
 ## Steps to host a local server:
+
+Environment Variables:
+
+Copy sample.env and rename to .env and all the required details
 
 - pipenv shell
   To create a virtual environment
