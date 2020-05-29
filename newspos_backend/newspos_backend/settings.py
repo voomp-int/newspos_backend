@@ -102,6 +102,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# rest Framework Pagination Global Settings
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
+    'PAGE_SIZE': 10
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

@@ -6,6 +6,8 @@ from .models import Article
 from rest_framework import status
 import json
 from rest_framework.response import Response
+from rest_framework.pagination import CursorPagination
+from rest_framework import generics
 
 
 @api_view(["GET"])
@@ -17,8 +19,17 @@ def welcome(request):
 @api_view(["GET"])
 def get_articles(request):
     articles = Article.objects.all()
-    serializer = ArticleSerializer(articles, many=True)
-    return JsonResponse({'articles': serializer.data}, status=status.HTTP_200_OK)
+
+    # Paginator Specific
+    paginator = CursorPagination()
+    paginator.ordering = 'id'
+    result_page = paginator.paginate_queryset(articles, request)
+    next_page = paginator.get_next_link()
+    previous_page = paginator.get_previous_link()
+    count = paginator.get_page_size(request)
+
+    serializer = ArticleSerializer(result_page, many=True)
+    return JsonResponse({'count': count, 'previous': previous_page, 'next': next_page, 'articles': serializer.data}, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -67,3 +78,14 @@ def delete_article(request, article_id):
         return JsonResponse({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
     except Exception:
         return JsonResponse({'error': 'Something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class SmallCursorPagination(CursorPagination):
+    page_size = 3
+    ordering = 'id'
+
+
+class RecordsCursored(generics.ListAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+    pagination_class = SmallCursorPagination
