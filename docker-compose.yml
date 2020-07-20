@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./newspos_backend:/app
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DEBUG=True
+      - DB_HOST=newspos-pg-1.cbbusyz4vegh.us-east-2.rds.amazonaws.com
+      - DB_NAME=newspos_test
+      - DB_USER=postgres
+      - DB_PASSWORD=asstechdb
+      - DB_PORT=5432
