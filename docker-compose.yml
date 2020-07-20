@@ -5,13 +5,14 @@ services:
     build:
       context: .
     ports:
-      - "8000:8000"
+      - "80:8000"
     volumes:
       - ./newspos_backend:/app
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
     environment:
-      - DEBUG=True
+      - SECRET_KEY=r-&_yencz0c_k%&vae0-cv*7+r83*5vp2gbw3^7%wxjbtijbh!
+      - DEBUG=False
       - DB_HOST=newspos-pg-1.cbbusyz4vegh.us-east-2.rds.amazonaws.com
       - DB_NAME=newspos_test
       - DB_USER=postgres
