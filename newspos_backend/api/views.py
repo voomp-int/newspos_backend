@@ -8,6 +8,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.pagination import CursorPagination
 from rest_framework import generics
+from django.contrib.postgres.search import SearchVector
 
 
 @api_view(["GET"])
@@ -18,7 +19,14 @@ def welcome(request):
 
 @api_view(["GET"])
 def get_articles(request):
-    articles = Article.objects.all()
+    search = request.query_params.get("search")
+
+    if search is not None:
+        articles = Article.objects.annotate(
+            vectors=SearchVector("title", "description")
+        ).filter(vectors=search)
+    else:
+        articles = Article.objects.all()
 
     # Paginator Specific
     paginator = CursorPagination()
