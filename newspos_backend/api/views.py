@@ -8,6 +8,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.pagination import CursorPagination
 from rest_framework import generics
+from django.contrib.postgres.search import SearchVector
 
 
 @api_view(["GET"])
@@ -18,18 +19,33 @@ def welcome(request):
 
 @api_view(["GET"])
 def get_articles(request):
-    articles = Article.objects.all()
+    search = request.query_params.get("search")
+
+    if search is not None:
+        articles = Article.objects.annotate(
+            vectors=SearchVector("title", "description")
+        ).filter(vectors=search)
+    else:
+        articles = Article.objects.all()
 
     # Paginator Specific
     paginator = CursorPagination()
-    paginator.ordering = 'id'
+    paginator.ordering = "id"
     result_page = paginator.paginate_queryset(articles, request)
     next_page = paginator.get_next_link()
     previous_page = paginator.get_previous_link()
     count = paginator.get_page_size(request)
 
     serializer = ArticleSerializer(result_page, many=True)
-    return JsonResponse({'count': count, 'previous': previous_page, 'next': next_page, 'articles': serializer.data}, status=status.HTTP_200_OK)
+    return JsonResponse(
+        {
+            "count": count,
+            "previous": previous_page,
+            "next": next_page,
+            "articles": serializer.data,
+        },
+        status=status.HTTP_200_OK,
+    )
 
 
 @api_view(["POST"])
@@ -43,14 +59,19 @@ def add_article(request):
             description=payload["description"],
             url=payload["url"],
             urlToImage=payload["urlToImage"],
-            publishedAt=payload["publishedAt"]
+            publishedAt=payload["publishedAt"],
         )
         serializer = ArticleSerializer(article)
-        return JsonResponse({'article': serializer.data}, status=status.HTTP_201_CREATED)
+        return JsonResponse(
+            {"article": serializer.data}, status=status.HTTP_201_CREATED
+        )
     except ObjectDoesNotExist as e:
-        return JsonResponse({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
     except Exception:
-        return JsonResponse({'error': 'Something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JsonResponse(
+            {"error": "Something went wrong"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 @api_view(["PUT"])
@@ -61,11 +82,14 @@ def alter_article(request, article_id):
         article_item.update(**payload)
         article = Article.objects.get(id=article_id)
         serializer = ArticleSerializer(article)
-        return JsonResponse({'article': serializer.data}, status=status.HTTP_200_OK)
+        return JsonResponse({"article": serializer.data}, status=status.HTTP_200_OK)
     except ObjectDoesNotExist as e:
-        return JsonResponse({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
     except Exception:
-        return JsonResponse({'error': 'Something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JsonResponse(
+            {"error": "Something went wrong"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 @api_view(["DELETE"])
@@ -75,6 +99,9 @@ def delete_article(request, article_id):
         article.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     except ObjectDoesNotExist as e:
-        return JsonResponse({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
     except Exception:
-        return JsonResponse({'error': 'Something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JsonResponse(
+            {"error": "Something went wrong"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )

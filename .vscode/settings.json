@@ -11,5 +11,7 @@
             "server": "newspos-pg-main.cbbusyz4vegh.us-east-2.rds.amazonaws.com",
             "username": "postgres"
         }
-    ]
+    ],
+    "python.pythonPath": "/home/tekkie/.local/share/virtualenvs/posnews_backend-uCLUb_mW/bin/python",
+    "python.formatting.provider": "black"
 }
