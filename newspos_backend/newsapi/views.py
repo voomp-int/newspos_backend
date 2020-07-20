@@ -58,14 +58,6 @@ def get_newsapi(request):
     return JsonResponse({"articles": response}, safe=False, status=status.HTTP_200_OK)
 
 
-# POST request listener for MM API
-@api_view(["POST", "PUT"])
-def mm_callback(request):
-    payload = json.loads(request.body)
-    print(payload)
-    return JsonResponse(payload, status=status.HTTP_202_ACCEPTED)
-
-
 # Helper function to analyze sentiment
 def isPositive(text_string):
     sid = SentimentIntensityAnalyzer()
