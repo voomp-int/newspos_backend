@@ -30,7 +30,7 @@ def get_articles(request):
 
     # Paginator Specific
     paginator = CursorPagination()
-    paginator.ordering = "id"
+    paginator.ordering = "-publishedAt", "-id"
     result_page = paginator.paginate_queryset(articles, request)
     next_page = paginator.get_next_link()
     previous_page = paginator.get_previous_link()

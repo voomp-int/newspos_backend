@@ -11,7 +11,7 @@ class Article(models.Model):
     content = models.TextField()
     url = models.CharField(max_length=350)
     urlToImage = models.TextField()
-    publishedAt = models.DateTimeField()
+    publishedAt = models.DateTimeField(default=timezone.now)
     compound_score = models.FloatField()
 
     class Meta:
