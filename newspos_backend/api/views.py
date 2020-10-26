@@ -19,12 +19,33 @@ def welcome(request):
 
 @api_view(["GET"])
 def get_articles(request):
+    
+    # Search by KEYWORD
     search = request.query_params.get("search")
-
     if search is not None:
         articles = Article.objects.annotate(
             vectors=SearchVector("title", "description")
         ).filter(vectors=search)
+    else:
+        articles = Article.objects.all()
+
+    # Search by SOURCE
+    source = request.query_params.get("source")
+    if source is not None:
+        articles = Article.objects.filter(
+            source__iexact = source   
+        )
+    else:
+        articles = Article.objects.all()
+    
+    # Show positive news
+    
+    # pos = False
+    pos = request.query_params.get("IsPos")
+    if pos == 'Yes':
+        articles = Article.objects.filter(
+            compound_score__gt = 0
+        )
     else:
         articles = Article.objects.all()
 
